@@ -21,7 +21,7 @@ class FileController extends Controller
         $pdf = $pdfParser->parseFile($file->path());
         $content = $pdf->getText();
 
-        return response()->json(['data' => $content]);
+        // return response()->json(['data' => $content]);
 
         preg_match('/\\n([\w\s()\d]+)\\tCONFIDENTIAL/m', $content, $company);
 
