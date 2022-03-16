@@ -15,11 +15,25 @@ use App\Http\Controllers\CompanyController;
 */
 
 Route::get('/', function () {
-    $path = \Storage::disk('public')->url('company-pdf/company.pdf');
+    // $headers = [
+    //     'Content-Type'        => 'application/pdf',
+    //     'Content-Disposition' => 'attachment; filename="'. $recording_data->file_name .'"',
+    // ];
 
-    return 'http://www.africau.edu/images/default/sample.pdf';
+    $path = 'http://www.africau.edu/images/default/sample.pdf'; // external url
 
-    // echo phpinfo();
+    return response(file_get_contents($path), 200, [
+        'Content-Type' => 'application/pdf'
+    ]);
+
+    return response()->stream(function () {
+        readfile($path); 
+    }, 200, ['Content-Type' => 'application/pdf']);
+
+    // return response()->file(Storage::path('company-pdf/company.pdf'));
+    // return Storage::response('http://www.africau.edu/images/default/sample.pdf');
+    // return response()->download('http://www.africau.edu/images/default/sample.pdf');
+
     // return view('welcome');
 });
 
