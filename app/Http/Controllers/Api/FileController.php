@@ -27,6 +27,8 @@ class FileController extends Controller
 
         $agiPdfPattern = '/([0-9]+\/[0-9]+\/[0-9]+)\s+?\\n-\s+\\n([0-9]+)\s+?[0-9]+\/[0-9]+\/[0-9]+\s+?([\w]+)\s+?[\d\.]+\s+?[\d\.]+\s+?([0-9]+\/[0-9]+\/[0-9]+)/m';
 
+        $ntucPdfPattern = '/Policy\s+?number\s+?:\\n([\d]+)\\nInsured\s+person\s+\(or\s+?people\)\s+?:\\n[\w\s]+\\nYour\s+?plan\s+?:\\n([\w\s]+)\\nDestination\s+?:\\n[\w]+\\nPeriod\s+?of\s+?insurance\s+?:\\n([\w\s()]+)To\s+?([\w\s]+)/m';
+
         if (count($company)) {
             preg_match('/(Policy Number:)\\t(\d+)\\t/m', $content, $policy);
             preg_match('/(Plan Type:)\\t([\w\s()\d]+)\\t/m', $content, $product);
@@ -51,6 +53,17 @@ class FileController extends Controller
                 'product_name'  => $matches[3] ?? null,
                 'company_name'  => $company[1] ?? null,
                 'start_date'    => $matches[1] ?? null,
+                'end_date'      => $matches[4] ?? null
+            ];
+        }
+        elseif (preg_match($ntucPdfPattern, $content, $matches)) {
+            $company = 'NTUC INCOME INSURANCE CO-OPERATIVE LTD';
+            
+            $data = [
+                'policy_number' => $matches[1] ?? null,
+                'product_name'  => $matches[2] ?? null,
+                'company_name'  => $company,
+                'start_date'    => $matches[3] ?? null,
                 'end_date'      => $matches[4] ?? null
             ];
         }
